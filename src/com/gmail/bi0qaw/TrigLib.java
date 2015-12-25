@@ -12,28 +12,6 @@ import org.bukkit.util.Vector;
 
 public class TrigLib {
 
-    Number pi = Math.PI;
-
-    public double sin(double d){
-        return Math.sin(d);
-    }
-
-    public double cos(double d){
-        return Math.cos(d);
-    }
-
-    public double tan(double d){
-        return Math.tan(d);
-    }
-
-    public double pow(double d){
-        return Math.pow(d, 2);
-    }
-
-    public double pow(double d, double v){
-        return Math.pow(d, v);
-    }
-
     public Number[] llen(Location[] l){
     	Number[] nums = new Number[Array.getLength(l)];
     	int i = 0;
@@ -56,9 +34,10 @@ public class TrigLib {
 
     public Location[] offset(Location[] l, Location l2){
     	Location[] locs = new Location[Array.getLength(l)];
+    	Vector vect = l2.clone().toVector();
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().add(l2);
+    		locs[i] = tempLoc.clone().add(vect);
     		i++;
     	}
         return locs;
@@ -85,10 +64,10 @@ public class TrigLib {
     }
     public Location[] lmult(Location[] l, Location l2){
     	Location[] locs = new Location[Array.getLength(l)];
-    	Vector loc2 = l2.clone().toVector();
+    	Vector vect = l2.clone().toVector();
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().toVector().multiply(loc2).toLocation(tempLoc.getWorld());
+    		locs[i] = tempLoc.clone().toVector().multiply(vect).toLocation(tempLoc.getWorld());
     		i++;
     	}
     	return locs;
@@ -106,9 +85,10 @@ public class TrigLib {
 
     public Location[] relloc(Location[] l, Location l2){
     	Location[] locs = new Location[Array.getLength(l)];
+    	Vector vect = l2.clone().toVector();
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().subtract(l2);
+    		locs[i] = tempLoc.clone().subtract(vect);
     		i++;
     	}
     	return locs;
@@ -116,10 +96,10 @@ public class TrigLib {
 
     public Number[] dotp(Location[] l, Location l2){
     	Number[] nums = new Number[Array.getLength(l)];
-    	Vector v2 = l2.clone().toVector();
+    	Vector vect = l2.clone().toVector();
     	int i = 0;
     	for(Location tempLoc : l){
-    		nums[i] = tempLoc.clone().toVector().dot(v2);
+    		nums[i] = tempLoc.clone().toVector().dot(vect);
     		i++;
     	}
         return nums;
@@ -127,10 +107,10 @@ public class TrigLib {
 
     public Number[] cdotp(Location[] l, double x, double y, double z){
     	Number[] nums = new Number[Array.getLength(l)];
-    	Vector v2 = new Vector(x, y, z);
+    	Vector vect = new Vector(x, y, z);
     	int i = 0;
     	for(Location tempLoc : l){
-    		nums[i] = tempLoc.clone().toVector().dot(v2);
+    		nums[i] = tempLoc.clone().toVector().dot(vect);
     		i++;
     	}
         return nums;
@@ -138,10 +118,10 @@ public class TrigLib {
 
     public Location[] crossp(Location[] l, Location l2){
     	Location[] locs = new Location[Array.getLength(l)];
-    	Vector v2 = l2.clone().toVector();
+    	Vector vect = l2.clone().toVector();
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().toVector().crossProduct(v2).toLocation(tempLoc.getWorld());
+    		locs[i] = tempLoc.clone().toVector().crossProduct(vect).toLocation(tempLoc.getWorld());
     		i++;
     	}
     	return locs;
@@ -149,16 +129,17 @@ public class TrigLib {
 
     public Location[] ccrossp(Location[] l, double x, double y, double z){
     	Location[] locs = new Location[Array.getLength(l)];
-    	Vector v = new Vector(x, y, z);
+    	Vector vect = new Vector(x, y, z);
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().toVector().crossProduct(v).toLocation(tempLoc.getWorld());
+    		locs[i] = tempLoc.clone().toVector().crossProduct(vect).toLocation(tempLoc.getWorld());
     		i++;
     	}
     	return locs;
     }
 
     public Location[] rot(Location[] l, Location center, Location direction, double phi){
+    	Vector centerVect = center.clone().toVector();
     	Location[] locs = new Location[Array.getLength(l)];
     	Location lnormValue = lnorm(new Location[]{direction})[0];
     	double n1 = lnormValue.getX();
@@ -169,25 +150,26 @@ public class TrigLib {
         double z;
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().subtract(center);
+    		locs[i] = tempLoc.clone().subtract(centerVect);
     		x = locs[i].getX();
             y = locs[i].getY();
             z = locs[i].getZ();
-    		locs[i].setX(x * (Math.pow(n1, 2) * ( 1 - cos(phi)) + cos(phi)) + y * (n2 * n1 * ( 1 - cos(phi)) - n3 * sin(phi)) + z * (n1 * n3 * ( 1-cos(phi)) + n2 * (sin(phi))) );
-    	    locs[i].setY(x * (n1 * n2 * ( 1 - cos(phi)) + n3 * sin(phi)) + y * (pow(n2) * (1-cos(phi))+cos(phi)+z*(n2*n3*(1-cos(phi))-n1*sin(phi))));
-    	    locs[i].setZ(x * (n3*n1* (1-cos(phi))-n2*sin(phi))+y*(n3*n2* ( 1 - cos(phi))+n1*sin(phi))+ z* (pow(n3) * (1-cos(phi)) + cos(phi)));
+    		locs[i].setX(x * (Math.pow(n1, 2) * ( 1 - Math.cos(phi)) + Math.cos(phi)) + y * (n2 * n1 * ( 1 - Math.cos(phi)) - n3 * Math.sin(phi)) + z * (n1 * n3 * ( 1-Math.cos(phi)) + n2 * (Math.sin(phi))) );
+    	    locs[i].setY(x * (n1 * n2 * ( 1 - Math.cos(phi)) + n3 * Math.sin(phi)) + y * (Math.pow(n2, 2) * (1-Math.cos(phi))+Math.cos(phi)+z*(n2*n3*(1-Math.cos(phi))-n1*Math.sin(phi))));
+    	    locs[i].setZ(x * (n3*n1* (1-Math.cos(phi))-n2*Math.sin(phi))+y*(n3*n2* ( 1 - Math.cos(phi))+n1*Math.sin(phi))+ z* (Math.pow(n3,2) * (1-Math.cos(phi)) + Math.cos(phi)));
     	    i++;
     	}
     	return offset(locs,center);
     }
 
     public Location[] xrot(Location[] l, Location center, double phi){
+    	Vector centerVect = center.clone().toVector();
     	Location[] locs = new Location[Array.getLength(l)];
     	double y;
     	double z;
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().subtract(center);
+    		locs[i] = tempLoc.clone().subtract(centerVect);
     		y = locs[i].getY();
     		z = locs[i].getZ();
     		locs[i].setY(y * Math.cos(phi) + z * Math.sin(phi));
@@ -198,12 +180,13 @@ public class TrigLib {
     }
 
     public Location[] yrot(Location[] l, Location center, double phi){
+    	Vector centerVect = center.clone().toVector();
     	Location[] locs = new Location[Array.getLength(l)];
     	double x;
     	double z;
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().subtract(center);
+    		locs[i] = tempLoc.clone().subtract(centerVect);
     		x = locs[i].getX();
     		z = locs[i].getZ();
     		locs[i].setX(x * Math.cos(phi) - z * Math.sin(phi));
@@ -215,12 +198,13 @@ public class TrigLib {
     }
     
     public Location[] zrot(Location[] l, Location center, double phi){
+    	Vector centerVect = center.clone().toVector();
     	Location[] locs = new Location[Array.getLength(l)];
     	double x;
     	double y;
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().subtract(center);
+    		locs[i] = tempLoc.clone().subtract(centerVect);
     		x = locs[i].getX();
     		y = locs[i].getY();
     		locs[i].setX(x * Math.cos(phi) + y * Math.sin(phi));
@@ -231,10 +215,11 @@ public class TrigLib {
     }
 
     public Location[] ptrefl(Location[] l, Location l2){
+    	Vector vect = l2.clone().toVector();
     	Location[] locs = new Location[Array.getLength(l)];
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().subtract(l2).multiply(-2).add(l2);
+    		locs[i] = tempLoc.clone().subtract(vect).multiply(-2).add(vect);
     		i++;
     	}
     	return locs;
@@ -242,21 +227,21 @@ public class TrigLib {
 
     public Location[] refl(Location[] l, Location point, Location dir){
     	Location[] locs = new Location[Array.getLength(l)];
-    	Vector pointv = point.clone().toVector();
-    	Vector dirv = dir.clone().toVector();
+    	Vector vect = point.clone().toVector().multiply(dir.clone().toVector());
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().toVector().multiply(pointv.multiply(dirv)).toLocation(tempLoc.getWorld());
+    		locs[i] = tempLoc.clone().toVector().multiply(vect).toLocation(tempLoc.getWorld());
     		i++;
     	}
     	return locs;		
     }
 
     public Location[] scale(Location[] l, Location center, double d){
+    	Vector centerVect = center.clone().toVector();
     	Location[] locs = new Location[Array.getLength(l)];
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().subtract(center).multiply(d).add(center);
+    		locs[i] = tempLoc.clone().subtract(centerVect).multiply(d).add(centerVect);
     		i++;
     	}
     	return locs;
@@ -274,11 +259,12 @@ public class TrigLib {
     }
     
     public Location[] cdirscale(Location[] l, Location center, double x, double y, double z){
+    	Vector centerVect = center.clone().toVector();
     	Location[] locs = new Location[Array.getLength(l)];
     	Vector vect = new Vector(x, y ,z);
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().subtract(center).toVector().multiply(vect).toLocation(tempLoc.getWorld()).add(center);
+    		locs[i] = tempLoc.clone().subtract(centerVect).toVector().multiply(vect).toLocation(tempLoc.getWorld()).add(centerVect);
     		i++;
     	}
     	return locs;
@@ -347,24 +333,28 @@ public class TrigLib {
     }
     
     public Location[] lineloc(Location[] l, Location l2, double p){
+    	Vector vect = l2.clone().toVector();
     	Location[] locs = new Location[Array.getLength(l)];
     	int i = 0;
     	for(Location tempLoc : l){
-    		locs[i] = tempLoc.clone().add(l2.clone().subtract(tempLoc).multiply(p));
+    		locs[i] = tempLoc.clone().add(vect.clone().subtract(tempLoc.clone().toVector()).multiply(p));
     		i++;
     	}
     	return locs;
     }
     
     public Location[] getLine(Location[] l, Location l2, double d){
+    	Vector vect = l2.clone().toVector();
     	List<Location> locs = new ArrayList<Location>();
-    	Location v;
+    	Vector v;
+    	Vector tempVect;
     	
     	int k;
     	int i;
     	for(Location tempLoc : l){
-    		k  = (int) (tempLoc.distance(l2) * d);
-    		v = l2.clone().subtract(tempLoc).multiply(1D/k);
+    		tempVect = tempLoc.toVector();
+    		k  = (int) (tempVect.distance(vect) * d);
+    		v = vect.clone().subtract(tempVect).multiply(1D/k);
     		for(i = 0; i < k ; i++){
     			locs.add(tempLoc.clone().add(v.clone().multiply(i)));
     		}
