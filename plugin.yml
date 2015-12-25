@@ -1,0 +1,6 @@
+name: Biosphere
+author: bi0qaw
+description: Biosphere Skript Addon
+version: 1.0.2
+main: com.gmail.bi0qaw.Main
+depend: [Skript]
